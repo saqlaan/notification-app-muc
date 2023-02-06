@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "673457383890",
+    "project_id": "muctech-notifications",
+    "storage_bucket": "muctech-notifications.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673457383890:android:aa50d61448a8ace177c00b",
+        "android_client_info": {
+          "package_name": "com.muctechnotification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673457383890-j9ink8h92ftj9hb93g8bijojdc96262t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.muctechnotification",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "673457383890-erldj8imv98cgd78datbek295i9akbfa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4ZbpKyouMvxkc_uAKwkzxuhjIwZvDe7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673457383890-erldj8imv98cgd78datbek295i9akbfa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "673457383890-7gmg1qrgddneksb70ck6oohsbdbqcfvf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.muctech.notifications"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673457383890:android:4763f269562c1cfd77c00b",
+        "android_client_info": {
+          "package_name": "com.notificationapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673457383890-erldj8imv98cgd78datbek295i9akbfa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4ZbpKyouMvxkc_uAKwkzxuhjIwZvDe7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673457383890-erldj8imv98cgd78datbek295i9akbfa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "673457383890-7gmg1qrgddneksb70ck6oohsbdbqcfvf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.muctech.notifications"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
