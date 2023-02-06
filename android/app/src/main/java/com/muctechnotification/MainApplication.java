@@ -1,4 +1,4 @@
-package com.notificationapp;
+package com.muctechnotification;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {View} from 'react-native';
+import React, { useState } from 'react';
+import { View } from 'react-native';
 import AppBackground from '../../components/AppBackground/appBackground';
-import {styles} from './style';
-import {Button, Text} from '@react-native-material/core';
+import { styles } from './style';
+import { Button, Text } from '@react-native-material/core';
 import TextInputIcon from '../../components/TextInputIcon/textInputIcon';
 import Email from '../../assets/icons/email.svg';
 import Password from '../../assets/icons/password.svg';
@@ -10,9 +10,14 @@ import GoogleIcon from '../../assets/icons/google.svg';
 import colors from '../../theme/colors';
 import Spacer from '../../components/Spacer/spacer';
 import loginSchema from '../../validations/login';
-import {showMessage} from 'react-native-flash-message';
+import { showMessage } from 'react-native-flash-message';
+import { authServices } from '../../services/auth';
 
 export default function Login() {
+  const [isSignInLoading, setIsSignInLoading] = useState({
+    email: false,
+    google: false,
+  });
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -21,6 +26,9 @@ export default function Login() {
   const handleOnPressLogin = React.useCallback(async () => {
     const isValid = await loginSchema.isValid(form);
     if (isValid) {
+      setIsSignInLoading(value => ({ ...value, email: true }));
+      await authServices.emailSignIn(form.email, form.password);
+      setIsSignInLoading(value => ({ ...value, email: false }));
       return;
     }
     showMessage({
@@ -32,6 +40,12 @@ export default function Login() {
   const isLoginButtonDisabled = React.useCallback(() => {
     return form.email === '' && form.password === '';
   }, [form]);
+
+  const handleGoogleSignin = async () => {
+    setIsSignInLoading(value => ({ ...value, google: true }));
+    await authServices.googleSignIn();
+    setIsSignInLoading(value => ({ ...value, google: true }));
+  };
 
   return (
     <AppBackground style={styles.mainContainer}>
@@ -49,7 +63,7 @@ export default function Login() {
               keyboardType={'email-address'}
               textContentType={'emailAddress'}
               value={form.value}
-              onChangeText={email => setForm(value => ({...value, email}))}
+              onChangeText={email => setForm(value => ({ ...value, email }))}
             />
             <Spacer marginVertical={10} />
             <TextInputIcon
@@ -60,7 +74,7 @@ export default function Login() {
               secureTextEntry
               value={form.password}
               onChangeText={password =>
-                setForm(value => ({...value, password}))
+                setForm(value => ({ ...value, password }))
               }
             />
             <Spacer marginVertical={10} />
@@ -76,8 +90,9 @@ export default function Login() {
               title="Log In"
               color={colors.blue}
               uppercase={false}
-              onPress={handleOnPressLogin}
+              onPress={isSignInLoading.email ? null : handleOnPressLogin}
               disabled={isLoginButtonDisabled()}
+              loading={isSignInLoading.email}
             />
           </View>
         </View>
@@ -89,7 +104,7 @@ export default function Login() {
           </View>
           <Spacer marginVertical={10} />
           <Button
-            titleStyle={[styles.buttonText, {color: colors.blue}]}
+            titleStyle={[styles.buttonText, { color: colors.blue }]}
             title="Google"
             contentContainerStyle={styles.googleButtonContainer}
             leading={props => (
@@ -98,6 +113,7 @@ export default function Login() {
             leadingContainerStyle={styles.googleButtonLeading}
             loading={false}
             color="white"
+            onPress={handleGoogleSignin}
           />
         </View>
         <View style={styles.bottomBorder} />
