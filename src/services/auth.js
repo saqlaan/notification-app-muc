@@ -19,7 +19,11 @@ export const authServices = {
       await GoogleSignin.hasPlayServices();
       const { idToken } = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      return auth().signInWithCredential(googleCredential);
+      await auth().signInWithCredential(googleCredential);
+      showMessage({
+        message: 'Signed in!',
+        type: 'success',
+      });
     } catch (error) {
       showMessage({
         message: 'Google login failed. Try again',
