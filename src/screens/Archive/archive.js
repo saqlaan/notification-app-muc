@@ -15,15 +15,8 @@ export default function Welcome() {
   };
 
   return (
-    <AppBackground style={styles.mainContainer}>
-      <View style={styles.container}>
-        <Text>Welcome to the app</Text>
-        <Button
-          loading={isSigningOut}
-          onPress={isSigningOut ? null : handleLogout}
-          title="Logout"
-        />
-      </View>
-    </AppBackground>
+    <View style={styles.container}>
+      <Text>Welcome to the app</Text>
+    </View>
   );
 }
