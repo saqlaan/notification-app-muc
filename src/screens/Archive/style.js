@@ -11,5 +11,6 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f4f5f7',
     borderRadius: 6,
     flex: 1,
+    padding: 20,
   },
 });

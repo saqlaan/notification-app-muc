@@ -1,4 +1,7 @@
 export default {
   LOGIN: 'LOGIN',
-  WELCOME: 'WELCOME',
+  ARCHIVE: 'ARCHIVE',
+  NOTIFICATION: 'NOTIFICATION',
+  HOME: 'HOME',
+  MESSAGES: 'Messages',
 };
