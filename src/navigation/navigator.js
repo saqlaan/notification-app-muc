@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+
 import auth from '@react-native-firebase/auth';
 import { createStackNavigator } from '@react-navigation/stack';
 import NavigatorPath from './navigatorPaths';
-import login from '../screens/Login/login';
-import Welcome from '../screens/Welcome/welcome';
+import { Login } from '../screens';
+import { NotificationScreenTab } from './tabs';
 
 const RootStack = createStackNavigator();
 
@@ -11,7 +12,7 @@ const PublicNavigator = () => (
   <RootStack.Navigator initialRouteName={NavigatorPath.LOGIN}>
     <RootStack.Screen
       name={NavigatorPath.LOGIN}
-      component={login}
+      component={Login}
       options={{
         headerShown: false,
       }}
@@ -20,10 +21,10 @@ const PublicNavigator = () => (
 );
 
 const PrivateNavigator = () => (
-  <RootStack.Navigator initialRouteName={NavigatorPath.WELCOME}>
+  <RootStack.Navigator initialRouteName={NavigatorPath.HOME}>
     <RootStack.Screen
-      name={NavigatorPath.WELCOME}
-      component={Welcome}
+      name={NavigatorPath.HOME}
+      component={NotificationScreenTab}
       options={{
         headerShown: false,
       }}
@@ -44,7 +45,7 @@ const Navigator = () => {
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+    return subscriber;
   }, []);
 
   if (initializing) {
