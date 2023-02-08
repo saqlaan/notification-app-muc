@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-
 import auth from '@react-native-firebase/auth';
 import { createStackNavigator } from '@react-navigation/stack';
 import NavigatorPath from './navigatorPaths';
-import { Login } from '../screens';
+import { Login, Details } from '../screens';
 import { NotificationScreenTab } from './tabs';
 
 const RootStack = createStackNavigator();
@@ -25,6 +24,13 @@ const PrivateNavigator = () => (
     <RootStack.Screen
       name={NavigatorPath.HOME}
       component={NotificationScreenTab}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <RootStack.Screen
+      name={NavigatorPath.DETAILS}
+      component={Details}
       options={{
         headerShown: false,
       }}

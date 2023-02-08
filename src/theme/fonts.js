@@ -1,5 +1,6 @@
 export default {
   REGULAR: 'OpenSans-Regular',
   MEDIUM: 'OpenSans-Medium',
-  BOLD: 'OpenSans-SemiBold',
+  SEMI_BOLD: 'OpenSans-SemiBold',
+  BOLD: 'OpenSans-Bold',
 };

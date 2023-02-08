@@ -4,4 +4,5 @@ export default {
   NOTIFICATION: 'NOTIFICATION',
   HOME: 'HOME',
   MESSAGES: 'Messages',
+  DETAILS: 'Details',
 };

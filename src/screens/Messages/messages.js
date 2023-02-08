@@ -1,7 +1,7 @@
 import React from 'react';
 import { StatusBar, View } from 'react-native';
 import NotificationItem from '../../components/NotificationItem/notificationItem';
-import Spacer from '../../components/Spacer/spacer';
+import Spacer from '../../components/atom/Spacer/spacer';
 import { styles } from './style';
 
 export default function Messages() {
