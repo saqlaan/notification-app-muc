@@ -1,7 +1,10 @@
+import messaging from '@react-native-firebase/messaging';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import { showMessage } from 'react-native-flash-message';
+import { getUniqueId } from 'react-native-device-info';
 import env from '../constants/env';
+import { addNotificationToken, removeNotificationToken } from './user';
 
 GoogleSignin.configure({
   scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
@@ -24,6 +27,7 @@ export const authServices = {
         message: 'Signed in!',
         type: 'success',
       });
+      this.onLoginSuccess();
     } catch (error) {
       showMessage({
         message: 'Google login failed. Try again',
@@ -33,28 +37,46 @@ export const authServices = {
   },
   emailSignIn: async function (email, password) {
     return auth()
-      .createUserWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email, password)
       .then(() => {
         showMessage({
           message: 'Signed in!',
           type: 'success',
         });
+        this.onLoginSuccess();
       })
-      .catch(error => {
-        console.log(error);
-        if (error.code === 'auth/email-already-in-use') {
+      .catch(async error => {
+        if (error.code === 'auth/user-not-found') {
+          auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then(() => {
+              this.onLoginSuccess();
+            });
+        } else if (error.code === 'auth/email-already-in-use') {
           showMessage({
             message: 'That email address is already in use!',
             type: 'danger',
           });
+        } else {
+          showMessage({
+            message: 'Something went wrong. Please try again.',
+            type: 'danger',
+          });
         }
-        showMessage({
-          message: 'Something went wrong. Please try again.',
-          type: 'danger',
-        });
       });
   },
+  onLoginSuccess: async function () {
+    const token = await messaging().getToken();
+    const deviceId = await getUniqueId();
+    addNotificationToken({ token, deviceId });
+  },
   logout: async function () {
-    return await auth().signOut();
+    await this.logoutCleanup();
+    await auth().signOut();
+    return null;
+  },
+  logoutCleanup: async function () {
+    const deviceId = await getUniqueId();
+    return removeNotificationToken({ deviceId });
   },
 };

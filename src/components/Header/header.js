@@ -3,9 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '@react-native-material/core';
 import fonts from '../../theme/fonts';
 
-export default ({ title, rightButton }) => {
+export default ({ title, rightButton, leftButton }) => {
   return (
     <View style={[styles.container]}>
+      <View style={styles.leftNode}>{leftButton}</View>
       <Text variant={'h6'} style={styles.title}>
         {title}
       </Text>
@@ -16,10 +17,10 @@ export default ({ title, rightButton }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    height: 70,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontFamily: fonts.REGULAR,
@@ -27,8 +28,16 @@ const styles = StyleSheet.create({
   },
   rightNode: {
     position: 'absolute',
-    right: 10,
-    top: 25,
+    right: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
     height: '100%',
+  },
+  leftNode: {
+    position: 'absolute',
+    left: 20,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

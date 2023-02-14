@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import colors from '../../theme/colors';
+import colors from '../../../theme/colors';
 
 export default function TextInputIcon({ icon, ...rest }) {
   return (

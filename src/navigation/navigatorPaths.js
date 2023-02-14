@@ -1,7 +1,8 @@
 export default {
   LOGIN: 'LOGIN',
-  ARCHIVE: 'ARCHIVE',
+  ARCHIVE: 'Archive',
   NOTIFICATION: 'NOTIFICATION',
   HOME: 'HOME',
   MESSAGES: 'Messages',
+  DETAILS: 'Details',
 };

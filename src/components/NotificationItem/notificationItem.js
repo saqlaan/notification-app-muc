@@ -1,7 +1,9 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '@react-native-material/core';
 import fonts from '../../theme/fonts';
+import { useNavigation } from '@react-navigation/native';
+import navigatorPaths from '../../navigation/navigatorPaths';
 
 export default function NotificationItem({
   imgSrc,
@@ -11,8 +13,12 @@ export default function NotificationItem({
   isSeen,
   ...rest
 }) {
+  const navigation = useNavigation();
+
   return (
-    <View style={[styles.container]}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate(navigatorPaths.DETAILS)}
+      style={[styles.container]}>
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={{ uri: imgSrc }} />
         <View style={styles.active} />
@@ -28,7 +34,7 @@ export default function NotificationItem({
       <View style={styles.timeContainer}>
         <Text style={styles.time}>{time}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: fonts.BOLD,
+    fontFamily: fonts.SEMI_BOLD,
     color: '#000',
     marginBottom: 3,
   },
@@ -63,7 +69,7 @@ const styles = StyleSheet.create({
   timeContainer: {},
   time: {
     color: '#B4B9C1',
-    fontFamily: fonts.BOLD,
+    fontFamily: fonts.SEMI_BOLD,
     fontSize: 13,
   },
   active: {
