@@ -6,12 +6,17 @@
  */
 
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Navigator from './src/navigation/navigator';
 import FlashMessage from 'react-native-flash-message';
+import setupNotifications from './src/firebase/notifications';
 
 function App() {
+  useEffect(() => {
+    setupNotifications();
+  }, []);
+
   return (
     <NavigationContainer>
       <SafeAreaProvider>

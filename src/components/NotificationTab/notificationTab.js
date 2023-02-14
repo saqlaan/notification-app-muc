@@ -42,7 +42,7 @@ export default function NotificationTab({
         };
 
         return (
-          <View style={styles.buttonWrapper}>
+          <View style={styles.buttonWrapper} key={route + index}>
             <TouchableOpacity
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}

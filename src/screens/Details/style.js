@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '100%',
     justifyContent: 'space-between',
-    paddingTop: 20,
+    paddingVertical: 20,
     gap: 10,
   },
   button: {
