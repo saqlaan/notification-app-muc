@@ -27,8 +27,10 @@ target 'notificationApp' do
   # Flags change depending on the env values.
   flags = get_default_flags()
   
-  use_frameworks!
+  use_frameworks! :linkage => :static
 
+  pod 'RNFBFirestore', :path => '../node_modules/@react-native-firebase/firestore'
+  
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes is now enabled by default. Disable by setting this flag to false.
