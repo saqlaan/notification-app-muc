@@ -4,6 +4,8 @@ export const styles = StyleSheet.create({
   messagesContainer: {
     flex: 1,
     backgroundColor: 'white',
-    paddingTop: 30,
+  },
+  flatListContent: {
+    paddingTop: 20,
   },
 });

@@ -1,31 +1,50 @@
-import React from 'react';
-import { StatusBar, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, View, FlatList } from 'react-native';
 import NotificationItem from '../../components/NotificationItem/notificationItem';
 import Spacer from '../../components/atom/Spacer/spacer';
 import { styles } from './style';
+import { notificationsRef } from '../../services/user';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import ListEmpty from '../../components/atom/ListEmpty/listEmpty';
 
 export default function Messages() {
-  return (
-    <View style={styles.messagesContainer}>
-      <StatusBar barStyle={'light-content'} />
+  const [notifications, setNotifications] = useState([]);
+  const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    notificationsRef()
+      .where('archived', '==', false)
+      .onSnapshot(doc => {
+        setNotifications(doc.docs);
+      });
+  }, []);
+
+  const renderItem = item => {
+    const notification = item.data();
+    return (
       <NotificationItem
-        imgSrc={
-          'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80'
-        }
-        title={'New Inquiry'}
-        description={'New Inquiry From Dhwani Parikh For Alton Place4'}
-        time={'1m ago'}
-        isSeen={'false'}
+        notificationData={{
+          id: item.id,
+          ...notification,
+          imgSrc:
+            'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80',
+        }}
       />
-      <Spacer marginVertical={10} />
-      <NotificationItem
-        imgSrc={
-          'https://www.foodiesfeed.com/wp-content/uploads/2022/07/pizza-with-pineapple-and-thin-crust.jpg'
+    );
+  };
+
+  return (
+    <View style={[styles.messagesContainer, { paddingBottom: insets.bottom }]}>
+      <StatusBar barStyle={'light-content'} />
+      <FlatList
+        data={notifications}
+        key={notification => notification.id}
+        renderItem={({ item }) => renderItem(item)}
+        ItemSeparatorComponent={<Spacer marginVertical={10} />}
+        contentContainerStyle={styles.flatListContent}
+        ListEmptyComponent={
+          <ListEmpty text={"You don't have any messages yet"} />
         }
-        title={'New Inquiry'}
-        description={'New Inquiry From Dhwani Parikh For Alton Place4'}
-        time={'1m ago'}
-        isSeen={'false'}
       />
     </View>
   );

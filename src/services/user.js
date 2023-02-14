@@ -61,3 +61,34 @@ export const updateUserData = async data => {
   const userRef = firestore().collection('users').doc(userId);
   return userRef.update(data);
 };
+
+export const updateNotification = async ({ id, data }) => {
+  const userId = getUser().uid;
+  try {
+    await firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('notifications')
+      .doc(id)
+      .update({ ...data });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const notificationsRef = () => {
+  const userId = getUser().uid;
+  return firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('notifications');
+};
+
+export const addDataToNotificationsCollection = () => {
+  const userId = getUser().uid;
+  return firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('notifications')
+    .add({});
+};

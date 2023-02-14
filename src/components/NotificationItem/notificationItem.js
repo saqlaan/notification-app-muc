@@ -5,23 +5,19 @@ import fonts from '../../theme/fonts';
 import { useNavigation } from '@react-navigation/native';
 import navigatorPaths from '../../navigation/navigatorPaths';
 
-export default function NotificationItem({
-  imgSrc,
-  title,
-  description,
-  time,
-  isSeen,
-  ...rest
-}) {
+export default function NotificationItem({ notificationData, ...rest }) {
   const navigation = useNavigation();
+  const { imgSrc, title, description, time, isSeen } = notificationData;
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate(navigatorPaths.DETAILS)}
+      onPress={() =>
+        navigation.navigate(navigatorPaths.DETAILS, { notificationData })
+      }
       style={[styles.container]}>
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={{ uri: imgSrc }} />
-        <View style={styles.active} />
+        {!isSeen && <View style={styles.active} />}
       </View>
       <View style={styles.descriptionContainer}>
         <Text variant={'body1'} style={styles.title}>
