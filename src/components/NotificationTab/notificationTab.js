@@ -1,7 +1,8 @@
 import { Text } from '@react-native-material/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import fonts from '../../theme/fonts';
+import { notificationsRef } from '../../services/user';
 
 export default function NotificationTab({
   state,
@@ -9,6 +10,14 @@ export default function NotificationTab({
   navigation,
   position,
 }) {
+  const [unSeenCount, setUnSeenCount] = useState(0);
+
+  useEffect(() => {
+    notificationsRef()
+      .where('isSeen', '==', false)
+      .onSnapshot(doc => setUnSeenCount(doc.size));
+  }, []);
+
   return (
     <View style={styles.tab}>
       {state.routes.map((route, index) => {
@@ -51,9 +60,9 @@ export default function NotificationTab({
               onPress={onPress}
               onLongPress={onLongPress}
               style={styles.tabButton}>
-              {label === 'Messages' && (
+              {label === 'Messages' && unSeenCount > 0 && (
                 <View style={styles.notificationBadge}>
-                  <Text style={styles.badge}>2</Text>
+                  <Text style={styles.badge}>{unSeenCount}</Text>
                 </View>
               )}
               <Text style={styles.label} variant="body1">
