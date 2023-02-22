@@ -4,7 +4,14 @@ import auth from '@react-native-firebase/auth';
 import { showMessage } from 'react-native-flash-message';
 import { getUniqueId } from 'react-native-device-info';
 import env from '../constants/env';
-import { addNotificationToken, removeNotificationToken } from './user';
+import { BASE_URL, FUNCTIONS } from '../constants/cloudFunctions';
+import {
+  addNotificationToken,
+  removeNotificationToken,
+  syncUserData,
+} from './user';
+import axios from 'axios';
+import { errorMessage, successMessage } from '../utils/functions';
 
 GoogleSignin.configure({
   scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
@@ -36,13 +43,15 @@ export const authServices = {
     }
   },
   emailSignIn: async function (email, password) {
+    const userExists = await this.userExists(email);
+    if (!userExists) {
+      errorMessage('User does not exist');
+      return null;
+    }
     return auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        showMessage({
-          message: 'Signed in!',
-          type: 'success',
-        });
+        successMessage('Signed in!');
         this.onLoginSuccess();
       })
       .catch(async error => {
@@ -53,22 +62,27 @@ export const authServices = {
               this.onLoginSuccess();
             });
         } else if (error.code === 'auth/email-already-in-use') {
-          showMessage({
-            message: 'That email address is already in use!',
-            type: 'danger',
-          });
+          errorMessage('That email address is already in use!');
         } else {
-          showMessage({
-            message: 'Something went wrong. Please try again.',
-            type: 'danger',
-          });
+          errorMessage('Something went wrong. Please try again.');
         }
       });
+  },
+  userExists: async function (email) {
+    try {
+      const result = await axios.get(
+        `${BASE_URL}${FUNCTIONS.USER_EXISTS_IN_NETSUITE}?email=${email}`,
+      );
+      return result.data.userExists;
+    } catch (e) {
+      return false;
+    }
   },
   onLoginSuccess: async function () {
     const token = await messaging().getToken();
     const deviceId = await getUniqueId();
-    addNotificationToken({ token, deviceId });
+    await addNotificationToken({ token, deviceId });
+    await syncUserData();
   },
   logout: async function () {
     await this.logoutCleanup();

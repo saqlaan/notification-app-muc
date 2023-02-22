@@ -1,5 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import axios from 'axios';
+import { BASE_URL, FUNCTIONS } from '../constants/cloudFunctions';
 
 export const getAllUsers = async () => {
   return firestore().collection('users').d.get();
@@ -13,26 +15,12 @@ export const addNotificationToken = async ({ token, deviceId }) => {
   try {
     const userId = getUser().uid;
     const userRef = firestore().collection('users').doc(userId);
-    const snapShot = await userRef.get();
-    if (!snapShot.exists) {
-      userRef.set({
-        deviceTokens: [
-          {
-            token,
-            deviceId,
-          },
-        ],
-      });
-      return null;
+    const doc = await userRef.get();
+    let deviceTokens = [{ token, deviceId }];
+    if (doc.exists) {
+      deviceTokens = [...doc.data().deviceTokens, ...deviceTokens];
     }
-    const data = snapShot.data();
-    if (
-      !data.deviceTokens.map(notification => notification.token).includes(token)
-    ) {
-      updateUserData({
-        deviceTokens: [...data.deviceTokens, { token, deviceId }],
-      });
-    }
+    updateUserData({ deviceTokens });
   } catch (err) {
     console.log(err);
   }
@@ -44,9 +32,10 @@ export const removeNotificationToken = async ({ deviceId }) => {
     const userRef = firestore().collection('users').doc(userId);
     const snapShot = await userRef.get();
     if (snapShot.exists) {
-      const data = snapShot
-        .data()
-        ?.deviceTokens.filter(item => item.deviceId !== deviceId);
+      const data =
+        snapShot
+          .data()
+          ?.deviceTokens.filter(item => item.deviceId !== deviceId) || {};
       return updateUserData({
         deviceTokens: [...data],
       });
@@ -56,10 +45,25 @@ export const removeNotificationToken = async ({ deviceId }) => {
   }
 };
 
+export const getUserData = async () => {
+  const userId = getUser().uid;
+  const userRef = firestore().collection('users').doc(userId);
+  const user = await userRef.get();
+  if (user.exists) {
+    return user.data();
+  }
+  return {};
+};
+
 export const updateUserData = async data => {
   const userId = getUser().uid;
   const userRef = firestore().collection('users').doc(userId);
-  return userRef.update(data);
+  const doc = await userRef.get();
+  if (doc.exists) {
+    return userRef.update({ ...doc.data(), ...data });
+  } else {
+    userRef.set(data);
+  }
 };
 
 export const updateNotification = async ({ id, data }) => {
@@ -91,4 +95,40 @@ export const addDataToNotificationsCollection = () => {
     .doc(userId)
     .collection('notifications')
     .add({});
+};
+
+export const syncUserData = async () => {
+  const netsuiteUserData = await getUserDataFromNetsuite();
+  if (netsuiteUserData.data) {
+    const {
+      email,
+      firstName,
+      lastName,
+      id,
+      middleName,
+      mobilePhone,
+      partnerCode,
+    } = netsuiteUserData.data;
+    updateUserData({
+      email,
+      firstName,
+      lastName,
+      middleName,
+      netsuiteUserId: id,
+      mobilePhone,
+      partnerCode,
+    });
+  }
+};
+
+export const getUserDataFromNetsuite = async () => {
+  const email = getUser().email;
+  try {
+    const result = await axios.get(
+      `${BASE_URL}${FUNCTIONS.GET_NETSUITE_USER}?email=${email}`,
+    );
+    return result.data;
+  } catch (e) {
+    return false;
+  }
 };
