@@ -100,20 +100,12 @@ export const addDataToNotificationsCollection = () => {
 export const syncUserData = async () => {
   const netsuiteUserData = await getUserDataFromNetsuite();
   if (netsuiteUserData.data) {
-    const {
-      email,
-      firstName,
-      lastName,
-      id,
-      middleName,
-      mobilePhone,
-      partnerCode,
-    } = netsuiteUserData.data;
+    const { email, firstName, lastName, id, mobilePhone, partnerCode } =
+      netsuiteUserData.data;
     updateUserData({
       email,
       firstName,
       lastName,
-      middleName,
       netsuiteUserId: id,
       mobilePhone,
       partnerCode,
