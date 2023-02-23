@@ -27,8 +27,15 @@ export const authServices = {
   googleSignIn: async function () {
     try {
       await GoogleSignin.hasPlayServices();
-      const { idToken } = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const result = await GoogleSignin.signIn();
+      const userExists = await this.userExists(result.user.email);
+      if (!userExists) {
+        errorMessage('User does not exist');
+        return null;
+      }
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        result.idToken,
+      );
       await auth().signInWithCredential(googleCredential);
       showMessage({
         message: 'Signed in!',
