@@ -15,7 +15,10 @@ export default function Messages() {
     notificationsRef()
       .where('archived', '==', false)
       .onSnapshot(doc => {
-        setNotifications(doc.docs);
+        const orderDocs = doc.docs.sort(
+          (a, b) => b.data().created_at - a.data().created_at,
+        );
+        setNotifications(orderDocs);
       });
   }, []);
 
