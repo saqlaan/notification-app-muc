@@ -4,10 +4,11 @@ import { Text } from '@react-native-material/core';
 import fonts from '../../theme/fonts';
 import { useNavigation } from '@react-navigation/native';
 import navigatorPaths from '../../navigation/navigatorPaths';
+import ProfileImage from '../../assets/images/profile-icon.jpg';
 
 export default function NotificationItem({ notificationData, ...rest }) {
   const navigation = useNavigation();
-  const { imgSrc, title, description, time, isSeen } = notificationData;
+  const { title, description, time, isSeen } = notificationData;
 
   return (
     <TouchableOpacity
@@ -16,7 +17,7 @@ export default function NotificationItem({ notificationData, ...rest }) {
       }
       style={[styles.container]}>
       <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{ uri: imgSrc }} />
+        <Image style={styles.image} source={ProfileImage} />
         {!isSeen && <View style={styles.active} />}
       </View>
       <View style={styles.descriptionContainer}>

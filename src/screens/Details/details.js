@@ -9,21 +9,36 @@ import PropertyInformation from './components/PropertyInformation';
 import colors from '../../theme/colors';
 import { Button } from '@react-native-material/core';
 import { useRoute } from '@react-navigation/native';
-import { updateNotification } from '../../services/user';
+import { notificationDocRef, updateNotification } from '../../services/user';
+import { confirmRecipt } from '../../services/appointment';
 
 export default function Details() {
   const insets = useSafeAreaInsets();
   const route = useRoute();
   const { notificationData } = route.params;
-  const { callerDetails, propertyDetails, isSeen, id, archived } =
+  const { callerDetails, propertyDetails, isSeen, id, archived, isConfirmed } =
     notificationData;
-  const [isArchived, setIsArchived] = useState(archived);
+  const [liveNotificationData, setLiveNotificationData] = useState({
+    callerDetails,
+    propertyDetails,
+    isSeen,
+    id,
+    archived,
+    isConfirmed,
+  });
+  const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
   useEffect(() => {
     if (!isSeen) {
       markNotificationSeen();
     }
   }, [isSeen]);
+
+  useEffect(() => {
+    notificationDocRef(id).onSnapshot(doc => {
+      setLiveNotificationData(doc.data());
+    });
+  }, []);
 
   const markNotificationSeen = () => {
     updateNotification({
@@ -34,14 +49,23 @@ export default function Details() {
     });
   };
 
-  const archiveNotification = async () => {
+  const handleArchiveNotification = async () => {
     await updateNotification({
       id,
       data: {
         archived: true,
       },
     });
-    setIsArchived(true);
+  };
+
+  const handleConfirmReceipt = async () => {
+    if (!liveNotificationData?.case_number) {
+      alert('Error: Case number is missing');
+      return;
+    }
+    setIsConfirmLoading(true);
+    await confirmRecipt(id, liveNotificationData?.case_number);
+    setIsConfirmLoading(false);
   };
 
   const renderRigthButton = () => (
@@ -59,29 +83,36 @@ export default function Details() {
       />
       <View style={[styles.contentContainer, { paddingBottom: insets.bottom }]}>
         <ScrollView style={styles.scroll}>
-          <CallerInformation callerInfo={callerDetails} />
-          <PropertyInformation propertyInfo={propertyDetails} />
+          <CallerInformation callerInfo={liveNotificationData.callerDetails} />
+          <PropertyInformation
+            propertyInfo={liveNotificationData.propertyDetails}
+          />
         </ScrollView>
         <View style={styles.actionContainer}>
           <Button
+            loading={isConfirmLoading}
+            disabled={liveNotificationData.isConfirmed}
             style={styles.button}
             contentContainerStyle={styles.buttonContainerStyle}
             variant="contained"
-            title={'Confirm Recipt'}
+            title={'Confirm Receipt'}
             uppercase={false}
             color={colors.success}
             titleStyle={styles.buttonTitleStyle}
+            onPress={handleConfirmReceipt}
           />
           <Button
-            disabled={isArchived}
+            disabled={
+              liveNotificationData.archived || !liveNotificationData.isConfirmed
+            }
             style={styles.button}
             contentContainerStyle={styles.buttonContainerStyle}
             titleStyle={styles.buttonTitleStyle}
             variant="contained"
-            title={isArchived ? 'Archived' : 'Archive'}
+            title={liveNotificationData.archived ? 'Archived' : 'Archive'}
             uppercase={false}
             color={colors.danger}
-            onPress={archiveNotification}
+            onPress={handleArchiveNotification}
           />
         </View>
       </View>

@@ -88,6 +88,15 @@ export const notificationsRef = () => {
     .collection('notifications');
 };
 
+export const notificationDocRef = id => {
+  const userId = getUser().uid;
+  return firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('notifications')
+    .doc(id);
+};
+
 export const addDataToNotificationsCollection = () => {
   const userId = getUser().uid;
   return firestore()
