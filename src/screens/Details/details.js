@@ -64,7 +64,10 @@ export default function Details() {
       return;
     }
     setIsConfirmLoading(true);
-    await confirmRecipt(id, liveNotificationData?.case_number);
+    const result = await confirmRecipt(id, liveNotificationData?.case_number);
+    if (result) {
+      alert("This inquiry is now marked as 'Confirmed' Thanks you!");
+    }
     setIsConfirmLoading(false);
   };
 
